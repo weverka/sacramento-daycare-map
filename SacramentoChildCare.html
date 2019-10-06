@@ -1,0 +1,54 @@
+<html>
+<head>
+	<title>Child Care Centers - Sacramento</title>
+	
+
+	<!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+	
+	<style>
+		#map {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+	<!--Childcare locations derived from geojson data, stored as a variable called 'childcare' -->
+	<script type="text/javascript" src="childcare_locations.js"></script>
+
+</head>
+<body>
+
+	<div id="map"></div>
+	
+	
+	<script>
+		<!-- Set up the base map -->
+		var map = L.map('map').setView([38.5609201, -121.4697002], 10); 
+		
+		var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+		subdomains: 'abcd',
+		maxZoom: 19
+		}).addTo(map);
+		
+		<!-- Add the childcare center locations -->
+		<!-- L.geoJson(childcare).addTo(map); -->
+		L.geoJson(childcare,{
+			onEachFeature: function (feature, layer){
+				var popupContent = "<p><strong>" + feature.properties.FacilityName + "</strong></p>"
+				+"<p>Address: "+feature.properties.FacilityAddress+", "+feature.properties.FacilityCity +", "+ feature.properties.FacilityZip+"</p>"
+				+"<p>Phone: "+feature.properties.FacilityTelephoneNumber+"</p>"
+				+"<p>Facility Type: "+feature.properties.FacilityType+"</p>"
+				+"<p>Capacity: "+feature.properties.FacilityCapacity+"</p>"
+				+"<p><a href="+"https://secure.dss.ca.gov/CareFacilitySearch/FacDetail/"+feature.properties.FacilityNumber+">Click for more details from the CA Department of Social Services</a>"
+				;
+				layer.bindPopup(popupContent);
+			}
+		}
+		).addTo(map)
+		
+	</script>
+</body>
+</html>
