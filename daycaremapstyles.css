@@ -1,0 +1,11 @@
+span.popuplabel {
+            color: black;
+			font-weight: bold;
+			text-transform: capitalize;
+        }
+		
+
+
+.leaflet-popup-content p{
+    margin: 10px;
+}
