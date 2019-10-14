@@ -3,4 +3,4 @@ This project is a map of daycare facilities in Sacramento County derived from th
 - Downloaded daycare data from https://secure.dss.ca.gov/CareFacilitySearch/DownloadData
 - Filtered this dataset to only facilities in Sacramento County
 - Converted addresses into latitude/longitude coordinates using Texas A&M's free geocoding resource http://geoservices.tamu.edu/Services/Geocode/
-- Created a web map in leaflet
+- Created a web map using leaflet
