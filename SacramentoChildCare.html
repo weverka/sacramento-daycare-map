@@ -14,8 +14,11 @@
 			height: 100%;
 		}
 	</style>
-	<!--Childcare locations derived from geojson data, stored as a variable called 'childcare' -->
+	<!--Childcare locations derived from geojson data -->
 	<script type="text/javascript" src="childcare_locations.js"></script>
+	
+	<!-- Reference the custom styling that will override the Leaflet -->
+	<link rel="stylesheet" href="daycaremapstyles.css">
 
 </head>
 <body>
@@ -24,30 +27,112 @@
 	
 	
 	<script>
-		<!-- Set up the base map -->
-		var map = L.map('map').setView([38.5609201, -121.4697002], 10); 
+
 		
 		var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		subdomains: 'abcd',
 		maxZoom: 19
-		}).addTo(map);
+		});
+
 		
 		<!-- Add the childcare center locations -->
-		<!-- L.geoJson(childcare).addTo(map); -->
-		L.geoJson(childcare,{
+		
+		var infantmarker = { //create marker type for infant childcare centers
+			radius: 8,
+			fillColor: "#2c7fb8",
+			color: "#000",
+			weight: 1,
+			opacity: 1,
+			fillOpacity: 1
+		};
+		
+		var infantcare = L.geoJson(infantcare,{
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, infantmarker);
+			},
 			onEachFeature: function (feature, layer){
-				var popupContent = "<p><strong>" + feature.properties.FacilityName + "</strong></p>"
-				+"<p>Address: "+feature.properties.FacilityAddress+", "+feature.properties.FacilityCity +", "+ feature.properties.FacilityZip+"</p>"
-				+"<p>Phone: "+feature.properties.FacilityTelephoneNumber+"</p>"
-				+"<p>Facility Type: "+feature.properties.FacilityType+"</p>"
-				+"<p>Capacity: "+feature.properties.FacilityCapacity+"</p>"
+				var popupContent = "<p><span class = popuplabel>" + feature.properties.FacilityNameProper + "</span></p>"
+				+"<p><span class = popuplabel>Address:</span> "+feature.properties.FacilityAddressProper+", "+feature.properties.FacilityCityProper +", "+ feature.properties.FacilityZip+"</p>"
+				+"<p><span class = popuplabel>Phone:</span> "+feature.properties.FacilityTelephoneNumber+"</p>"
+				+"<p><span class = popuplabel>Facility Type:</span> "+feature.properties.FacilityType+"</p>"
+				+"<p><span class = popuplabel>Capacity:</span> "+feature.properties.FacilityCapacity+"</p>"
+				+"<p><a href="+"https://secure.dss.ca.gov/CareFacilitySearch/FacDetail/"+feature.properties.FacilityNumber+">Click for more details from the CA Department of Social Services</a>"
+				;
+				layer.bindPopup(popupContent);
+			}
+			
+		}
+		)
+		
+		var schoolagemarker = { //create marker type for school age daycare centers
+			radius: 8,
+			fillColor: "#fc8d62",
+			color: "#000",
+			weight: 1,
+			opacity: 1,
+			fillOpacity: 1
+		};
+		
+		var schoolage = L.geoJson(schoolage,{
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, schoolagemarker);
+			},
+			onEachFeature: function (feature, layer){
+				var popupContent = "<p><span class = popuplabel>" + feature.properties.FacilityNameProper + "</span></p>"
+				+"<p><span class = popuplabel>Address</span> "+feature.properties.FacilityAddressProper+", "+feature.properties.FacilityCityProper +", "+ feature.properties.FacilityZip+"</p>"
+				+"<p><span class = popuplabel>Phone:</span> "+feature.properties.FacilityTelephoneNumber+"</p>"
+				+"<p><span class = popuplabel>Facility Type:</span> "+feature.properties.FacilityType+"</p>"
+				+"<p><span class = popuplabel>Capacity:</span> "+feature.properties.FacilityCapacity+"</p>"
 				+"<p><a href="+"https://secure.dss.ca.gov/CareFacilitySearch/FacDetail/"+feature.properties.FacilityNumber+">Click for more details from the CA Department of Social Services</a>"
 				;
 				layer.bindPopup(popupContent);
 			}
 		}
-		).addTo(map)
+		)
+		
+		var daycaremarker = { //create marker type for daycare centers
+			radius: 8,
+			fillColor: "#66c2a5",
+			color: "#000",
+			weight: 1,
+			opacity: 1,
+			fillOpacity: 1
+		};
+		
+		var daycare = L.geoJson(daycare,{
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, daycaremarker);
+			},
+			onEachFeature: function (feature, layer){
+				var popupContent = "<p><span class = popuplabel>" + feature.properties.FacilityNameProper + "</span></p>"
+				+"<p><span class = popuplabel>Address:</span> "+feature.properties.FacilityAddressProper+", "+feature.properties.FacilityCityProper +", "+ feature.properties.FacilityZip+"</p>"
+				+"<p><span class = popuplabel>Phone:</span> "+feature.properties.FacilityTelephoneNumber+"</p>"
+				+"<p><span class = popuplabel>Facility Type:</span> "+feature.properties.FacilityType+"</p>"
+				+"<p><span class = popuplabel>Capacity:</span> "+feature.properties.FacilityCapacity+"</p>"
+				+"<p><a href="+"https://secure.dss.ca.gov/CareFacilitySearch/FacDetail/"+feature.properties.FacilityNumber+">Click for more details from the CA Department of Social Services</a>"
+				;
+				layer.bindPopup(popupContent);
+			}
+		}
+		)
+		
+		var center_types = { //create the control layer order as a variable
+			"Infant Care": infantcare,
+			"Daycare": daycare,
+			"School Age": schoolage
+		};
+		
+		<!-- Set up the base map -->
+		var map = L.map('map',{
+		center:[38.5609201, -121.4697002],
+		zoom:10,
+		layers: infantcare,daycare,schoolage
+		}); 
+		
+		basemap.addTo(map)
+		
+		L.control.layers(null, center_types,{collapsed:false}).addTo(map); //add the layer control functionality to the map
 		
 	</script>
 </body>
