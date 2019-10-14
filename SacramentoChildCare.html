@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
 	
+	
 	<style>
 		#map {
 			position: relative;
@@ -16,7 +17,7 @@
 	</style>
 	<!--Childcare locations derived from geojson data -->
 	<script type="text/javascript" src="childcare_locations.js"></script>
-	
+  
 	<!-- Reference the custom styling that will override the Leaflet -->
 	<link rel="stylesheet" href="daycaremapstyles.css">
 
@@ -28,15 +29,7 @@
 	
 	<script>
 
-		
-		var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-		subdomains: 'abcd',
-		maxZoom: 19
-		});
-
-		
-		<!-- Add the childcare center locations -->
+		<!-- Create the childcare center location layers -->
 		
 		var infantmarker = { //create marker type for infant childcare centers
 			radius: 8,
@@ -80,8 +73,8 @@
 			},
 			onEachFeature: function (feature, layer){
 				var popupContent = "<p><span class = popuplabel>" + feature.properties.FacilityNameProper + "</span></p>"
-				+"<p><span class = popuplabel>Address</span> "+feature.properties.FacilityAddressProper+", "+feature.properties.FacilityCityProper +", "+ feature.properties.FacilityZip+"</p>"
-				+"<p><span class = popuplabel>Phone:</span> "+feature.properties.FacilityTelephoneNumber+"</p>"
+				+"<p><span class = popuplabel>Address:</span> "+feature.properties.FacilityAddressProper+", "+feature.properties.FacilityCityProper +", "+ feature.properties.FacilityZip+"</p>"
+		    +"<p><span class = popuplabel>Phone:</span> "+feature.properties.FacilityTelephoneNumber+"</p>"
 				+"<p><span class = popuplabel>Facility Type:</span> "+feature.properties.FacilityType+"</p>"
 				+"<p><span class = popuplabel>Capacity:</span> "+feature.properties.FacilityCapacity+"</p>"
 				+"<p><a href="+"https://secure.dss.ca.gov/CareFacilitySearch/FacDetail/"+feature.properties.FacilityNumber+">Click for more details from the CA Department of Social Services</a>"
@@ -124,6 +117,13 @@
 		};
 		
 		<!-- Set up the base map -->
+      
+    var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+		subdomains: 'abcd',
+		maxZoom: 19
+		});
+    
 		var map = L.map('map',{
 		center:[38.5609201, -121.4697002],
 		zoom:10,
@@ -132,6 +132,7 @@
 		
 		basemap.addTo(map)
 		
+    <!-- Add the layer control to the map -->
 		L.control.layers(null, center_types,{collapsed:false}).addTo(map); //add the layer control functionality to the map
 		
 	</script>
